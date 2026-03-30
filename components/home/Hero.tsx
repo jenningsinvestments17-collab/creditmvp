@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
+import { PAYMENT_RELEASE_COPY } from "@/components/home/paymentCopy";
 
 export function Hero() {
   const desktopVideoSources = [
@@ -55,10 +56,10 @@ export function Hero() {
           <p className="eyebrow">Credu Consulting</p>
           <div className="inline-flex flex-wrap items-center gap-2">
             <span className="rounded-full border border-accent/40 bg-accent/12 px-4 py-2 text-[11px] uppercase tracking-[0.22em] text-accent">
-              No upfront service fee
+              No upfront fees
             </span>
             <span className="rounded-full border border-white/12 bg-white/[0.05] px-4 py-2 text-[11px] uppercase tracking-[0.22em] text-zinc-300">
-              Pay after service is rendered
+              Approval before release
             </span>
           </div>
           <h1 className="display-title text-6xl md:text-[7.6rem]">
@@ -66,21 +67,29 @@ export function Hero() {
             <br />
             Bigger Moves.
           </h1>
-          <p className="max-w-2xl text-lg leading-8 text-zinc-300 md:text-[1.15rem]">
-            Start intake. Upload the file. Move through review.
+          <p className="max-w-2xl text-base leading-7 text-zinc-300 md:text-[1.15rem] md:leading-8">
+            Start your file. Upload your documents. We handle the review.
             <br className="hidden md:block" />
-            Pay only after the dispute work is rendered and ready for final release.
+            {PAYMENT_RELEASE_COPY}
           </p>
-          <div className="flex flex-wrap gap-4 max-md:justify-center">
-            <Button href="/intake">Start Intake</Button>
-            <Button href="/book" variant="secondary">
+          <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap max-md:max-w-sm max-md:justify-center">
+            <Button href="/intake">Start Your Credit Review</Button>
+            <Button href="/book" variant="secondary" className="hidden md:inline-flex">
               Book A Call
             </Button>
           </div>
-          <p className="max-w-xl text-sm leading-7 text-zinc-400">
-            Clear intake. Secure uploads. Admin-reviewed disputes. Certified-mail movement. One connected path from the first step to the final release.
-          </p>
-          <div className="flex flex-wrap gap-3 text-xs uppercase tracking-[0.18em] text-zinc-400 max-md:justify-center">
+          <div className="grid w-full gap-2 text-left text-sm leading-6 text-zinc-300 max-md:max-w-sm md:hidden">
+            <div className="rounded-[1rem] border border-white/10 bg-white/[0.05] px-4 py-3">
+              Upload all 3 reports
+            </div>
+            <div className="rounded-[1rem] border border-white/10 bg-white/[0.05] px-4 py-3">
+              Add ID and proof of address
+            </div>
+            <div className="rounded-[1rem] border border-white/10 bg-white/[0.05] px-4 py-3">
+              Admin-reviewed workflow with tracked mailing
+            </div>
+          </div>
+          <div className="hidden flex-wrap gap-3 text-xs uppercase tracking-[0.18em] text-zinc-400 md:flex max-md:justify-center">
             <span>Client portal</span>
             <span>3-bureau workflow</span>
             <span>AI + admin review</span>
@@ -94,7 +103,7 @@ export function Hero() {
           </p>
         </div>
 
-        <div className="flex items-end justify-end max-md:justify-center">
+        <div className="hidden items-end justify-end md:flex">
           <div className="relative w-full max-w-[31rem] overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.05] p-6 backdrop-blur-xl">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_22%_18%,rgba(198,169,107,0.24),transparent_22%),radial-gradient(circle_at_78%_26%,rgba(255,255,255,0.14),transparent_18%),linear-gradient(160deg,rgba(255,255,255,0.08)_0%,rgba(255,255,255,0.02)_38%,rgba(0,0,0,0.08)_100%)]" />
             <div className="absolute -right-10 top-10 h-36 w-36 rounded-full bg-accent/15 blur-3xl" />
@@ -150,7 +159,7 @@ export function Hero() {
                       Mailing
                     </p>
                     <p className="mt-2 text-sm leading-7 text-zinc-400">
-                      Certified-mail release only happens after the work is complete and payment is valid.
+                      {PAYMENT_RELEASE_COPY}
                     </p>
                   </div>
                 </div>
@@ -159,7 +168,7 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="absolute bottom-2 left-1/2 flex -translate-x-1/2 items-center gap-3 text-xs uppercase tracking-[0.24em] text-zinc-500 md:bottom-0 md:left-0 md:translate-x-0">
+        <div className="absolute bottom-2 left-1/2 hidden -translate-x-1/2 items-center gap-3 text-xs uppercase tracking-[0.24em] text-zinc-500 md:bottom-0 md:left-0 md:flex md:translate-x-0">
           <span>Scroll</span>
           <span className="inline-flex h-10 w-6 items-start justify-center rounded-full border border-white/12 p-1">
             <span className="mt-1 h-2 w-2 rounded-full bg-accent" />

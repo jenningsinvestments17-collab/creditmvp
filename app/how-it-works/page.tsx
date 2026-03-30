@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/Button";
+import { PAYMENT_RELEASE_COPY } from "@/components/home/paymentCopy";
 
 const processSteps = [
   {
@@ -33,9 +34,9 @@ const processSteps = [
   },
   {
     step: "06",
-    title: "$405 due",
+    title: "Certified mailing",
     copy:
-      "The service fee comes due after services are rendered, which keeps the pricing clear and the offer easy to trust.",
+      "Release disputes through certified mailing once the work is completed and approved for release.",
   },
   {
     step: "07",
@@ -72,9 +73,7 @@ export default function HowItWorksPage() {
               </h1>
             </div>
             <p className="section-copy">
-              This process is built to feel organized, visible, and easier to trust.
-              The order stays the same from beginning to end so clients always know
-              what this is, why it matters, and what comes next.
+              The process stays visible from intake to reassessment. Every step is structured so clients know what is needed, what happens next, and when payment becomes part of release.
             </p>
           </div>
 
@@ -99,11 +98,14 @@ export default function HowItWorksPage() {
                   ))}
                 </div>
 
-                <p className="text-sm leading-7 text-zinc-500">
-                  The goal is not to overwhelm. It is to keep the file moving in the
-                  right order while making the next action easy to understand.
-                </p>
-              </div>
+              <p className="text-sm leading-7 text-zinc-500">
+                The goal is not to overwhelm. It is to keep the file moving in the
+                right order while making the next action easy to understand.
+              </p>
+              <p className="text-sm leading-7 text-zinc-500">
+                {PAYMENT_RELEASE_COPY}
+              </p>
+            </div>
             </section>
 
             <section className="panel-dark-soft">

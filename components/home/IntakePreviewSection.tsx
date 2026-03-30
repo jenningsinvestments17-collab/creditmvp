@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/Button";
+import { PAYMENT_RELEASE_COPY } from "@/components/home/paymentCopy";
 
 const previewSteps = [
   {
@@ -33,7 +34,7 @@ export function IntakePreviewSection() {
   return (
     <section className="section-light-soft soft-divider rounded-[2.25rem] border border-black/5 bg-light-fade p-6 shadow-panel md:p-8">
       <div className="grid gap-6 xl:grid-cols-[1.05fr_0.95fr]">
-        <article className="rounded-[1.9rem] border border-black/10 bg-white/80 p-6 md:p-8">
+        <article className="hidden rounded-[1.9rem] border border-black/10 bg-white/80 p-6 md:block md:p-8">
           <div className="space-y-4">
             <p className="eyebrow">Before you sign up</p>
             <h2 className="display-title-lg text-text-dark">
@@ -66,7 +67,7 @@ export function IntakePreviewSection() {
           </div>
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-            <Button href="/intake">Start Intake</Button>
+            <Button href="/intake">Start Your Credit Review</Button>
             <Button href="/book" variant="secondaryLight">
               Book a Call
             </Button>
@@ -79,8 +80,8 @@ export function IntakePreviewSection() {
             <h2 className="display-title text-4xl md:text-6xl">
               What the file needs.
             </h2>
-            <p className="text-base leading-8 text-zinc-300">
-              The process does not stay vague. Clients know upfront which documents unlock the real review and what cannot be skipped.
+            <p className="text-sm leading-7 text-zinc-300 md:text-base md:leading-8">
+              Upload these items first so the file can move straight into review.
             </p>
           </div>
 
@@ -96,7 +97,20 @@ export function IntakePreviewSection() {
           </div>
 
           <div className="mt-6 rounded-[1.2rem] border border-accent/20 bg-accent/10 px-4 py-4 text-sm leading-7 text-zinc-100">
-            No upfront service fee. The client gets clarity on intake, uploads, review, and next steps before money becomes part of the release stage.
+            {PAYMENT_RELEASE_COPY}
+          </div>
+
+          <div className="mt-6 grid gap-3 text-sm leading-7 text-zinc-200 md:hidden">
+            <div className="rounded-[1.1rem] border border-white/10 bg-white/[0.05] px-4 py-4">
+              3-bureau process
+            </div>
+            <div className="rounded-[1.1rem] border border-white/10 bg-white/[0.05] px-4 py-4">
+              Admin-reviewed workflow
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <Button href="/intake">Start Your Credit Review</Button>
           </div>
         </article>
       </div>

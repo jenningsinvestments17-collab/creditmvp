@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/Button";
+import { PAYMENT_RELEASE_COPY } from "@/components/home/paymentCopy";
 
 const trustPoints = [
-  "No upfront service fee before the work is rendered",
+  PAYMENT_RELEASE_COPY,
   "3-bureau workflow with secure upload gating",
   "AI draft generation with admin review before release",
   "Certified-mail movement tracked inside the platform",
@@ -66,7 +67,7 @@ export function TrustSection() {
           </div>
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-            <Button href="/intake">Start Intake</Button>
+            <Button href="/intake">Start Your Credit Review</Button>
             <Button href="/book" variant="secondary">
               Book a Call
             </Button>

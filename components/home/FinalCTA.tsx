@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
+import { PAYMENT_RELEASE_COPY } from "@/components/home/paymentCopy";
 
 export function FinalCTA() {
   return (
@@ -12,19 +13,19 @@ export function FinalCTA() {
           <h2 className="display-title-lg break-words text-text-dark [overflow-wrap:anywhere]">
             Better credit. Clearer process. No upfront fee.
           </h2>
-          <p className="mx-auto max-w-2xl text-base leading-8 text-zinc-600 md:text-lg">
-            Better credit opens better options. The process stays guided from intake to upload to review to mailing, and the service fee only comes due after the work is rendered.
+          <p className="mx-auto max-w-2xl text-sm leading-7 text-zinc-600 md:text-lg md:leading-8">
+            Start your file, upload what is needed, and move into review with a clear next step. {PAYMENT_RELEASE_COPY}
           </p>
         </div>
 
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-center">
           <Button href="/intake">Start Your Credit Review</Button>
-          <Button href="/book" variant="secondary">
+          <Button href="/book" variant="secondary" className="hidden md:inline-flex">
             Book Consultation
           </Button>
         </div>
 
-        <p className="max-w-2xl text-sm leading-7 text-zinc-500">
+        <p className="hidden max-w-2xl text-sm leading-7 text-zinc-500 md:block">
           Clear process. Cleaner options. Stronger trust. Built to feel premium without turning the client journey into clutter.
         </p>
         <p className="text-xs uppercase tracking-[0.18em] text-zinc-500">

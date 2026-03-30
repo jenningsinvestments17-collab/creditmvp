@@ -8,7 +8,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prisma:generate": "prisma generate"
+    "prisma:generate": "prisma generate",
+    "debug:admin-auth": "node ./scripts/debug-admin-auth.mjs",
+    "reset:admin-password": "node ./scripts/reset-admin-password.mjs"
   },
   "dependencies": {
     "@prisma/client": "^6.16.1",

@@ -5,13 +5,13 @@ const proofCards = [
     label: "Collections removed",
     value: "7 collections removed",
     copy:
-      "Placeholder result card for a client file that shifted from pressure into cleaner credit visibility.",
+      "A cleaner file can change what lenders and landlords see first.",
   },
   {
     label: "Consumer-rights recovery",
     value: "$100,000+ recovered",
     copy:
-      "Placeholder trust proof for settlement and consumer-rights outcomes tied to strong file review and escalation.",
+      "Strong review and escalation can create real leverage when reporting breaks down.",
   },
   {
     label: "Vehicle opportunity",
@@ -23,7 +23,7 @@ const proofCards = [
     label: "Ownership progress",
     value: "Closer to homeownership",
     valueClassName:
-      "whitespace-nowrap text-[2rem] sm:text-[2.2rem] md:text-[2.15rem] xl:text-[2.8rem]",
+      "text-[1.85rem] sm:text-[2.1rem] md:text-[2rem] xl:text-[2.45rem]",
     copy:
       "Proof that better credit is not abstract. It changes what becomes reachable in real life.",
   },
@@ -60,23 +60,26 @@ export function ResultsSection() {
             <p className="eyebrow">Real results</p>
             <h2 className="display-title-lg">Proof in motion.</h2>
           </div>
-          <p className="section-copy">
+          <p className="section-copy hidden md:block">
             Better credit should feel visible in real outcomes. This section is built
             to show movement, trust, and transformation without turning the page into
             a cheap stats wall.
           </p>
+          <p className="max-w-2xl text-base leading-7 text-zinc-600 md:hidden">
+            Real proof should be easy to scan. These are the strongest signals clients look for first.
+          </p>
         </div>
 
-        <div className="grid gap-5 lg:grid-cols-[1.15fr_0.85fr]">
-          <div className="grid gap-5 md:grid-cols-2">
+        <div className="grid gap-8 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] xl:items-start">
+          <div className="grid min-w-0 auto-rows-fr gap-5 md:grid-cols-2">
             {proofCards.map((card, index) => (
               <article
                 key={card.value}
-                className={`rounded-[1.9rem] border p-6 shadow-panel transition-colors duration-200 md:p-7 ${
+                className={`flex min-w-0 flex-col rounded-[1.9rem] border p-6 shadow-panel transition-colors duration-200 md:p-7 ${
                   index < 2
                     ? "border-white/10 bg-background-soft text-white"
                     : "border-black/10 bg-white/78 text-text-dark"
-                }`}
+                } ${index > 1 ? "hidden md:flex" : ""}`}
               >
                 <p
                   className={`text-[11px] font-semibold uppercase tracking-[0.22em] ${
@@ -93,7 +96,7 @@ export function ResultsSection() {
                   {card.value}
                 </h3>
                 <p
-                  className={`mt-4 text-base leading-8 ${
+                  className={`mt-4 text-sm leading-7 md:text-base md:leading-8 ${
                     index < 2 ? "text-zinc-400" : "text-zinc-600"
                   }`}
                 >
@@ -103,8 +106,8 @@ export function ResultsSection() {
             ))}
           </div>
 
-          <div className="grid gap-5">
-            <article className="rounded-[1.9rem] border border-black/10 bg-white/78 p-6 shadow-panel md:p-7">
+          <div className="grid min-w-0 gap-5 xl:auto-rows-fr">
+            <article className="hidden rounded-[1.9rem] border border-black/10 bg-white/78 p-6 shadow-panel md:block md:p-7 xl:h-full">
               <p className="eyebrow">Trust signals</p>
               <div className="mt-5 grid gap-3">
                 {trustItems.map((item) => (
@@ -118,14 +121,13 @@ export function ResultsSection() {
               </div>
             </article>
 
-            <article className="rounded-[1.9rem] border border-accent/20 bg-accent/10 p-6 shadow-panel md:p-7">
+            <article className="rounded-[1.9rem] border border-accent/20 bg-accent/10 p-6 shadow-panel md:p-7 xl:h-full">
               <p className="eyebrow">Ready to start</p>
               <h3 className="mt-3 font-display break-words text-4xl uppercase leading-[0.92] tracking-[0.03em] text-text-dark [overflow-wrap:anywhere]">
                 Start the review before the next opportunity passes by.
               </h3>
-              <p className="mt-4 text-base leading-8 text-zinc-700">
-                Keep the journey moving from pressure into stronger options with a
-                clean intake path and a more visible process.
+              <p className="mt-4 text-sm leading-7 text-zinc-700 md:text-base md:leading-8">
+                Start with intake, upload what is needed, and move into review without guessing.
               </p>
               <div className="mt-6">
                 <Button href="/intake">Start Your Credit Review</Button>
@@ -134,7 +136,7 @@ export function ResultsSection() {
           </div>
         </div>
 
-        <div className="grid gap-5 md:grid-cols-2">
+        <div className="hidden gap-5 md:grid md:grid-cols-2">
           {testimonialCards.map((item) => (
             <article
               key={item.quote}
