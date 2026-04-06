@@ -116,8 +116,6 @@ function buildSeedStore(): MailingPipelineStore {
         amountCents: 40500,
         currency: "usd",
         status: "captured",
-        stripePaymentIntentId: `pi_${lead.id}`,
-        stripeCheckoutSessionId: `cs_${lead.id}`,
         checkoutUrl: `/dashboard?mailingPayment=${disputeId}&status=authorized`,
         updatePaymentMethodUrl: `/dashboard?mailingPayment=${disputeId}&status=payment_required`,
         requestedAt: "2026-03-24T13:32:00.000Z",
@@ -147,7 +145,7 @@ function buildSeedStore(): MailingPipelineStore {
           mailingJobId: `mailjob_${lead.id}`,
           eventType: "payment_confirmed",
           occurredAt: "2026-03-24T13:39:00.000Z",
-          actor: "Stripe webhook",
+          actor: "Payment release workflow",
           notes: "Payment confirmed for mailing workflow.",
         },
         {

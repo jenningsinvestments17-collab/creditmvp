@@ -5,35 +5,49 @@ import { listDisputes } from "@/lib/disputes/repository";
 import { getAllLeads } from "@/lib/leads";
 import { listMailingJobs, getPaymentRecordByDisputeId } from "@/lib/mailing/repository";
 
-export default async function AdminMailQueuePage() {
+export default async function AdminMailQueuePage({
+  searchParams,
+}: {
+  searchParams?: { mailing?: string };
+}) {
   await requireAuthenticatedAdmin();
-  const leads = getAllLeads();
-  const disputes = await listDisputes();
-  const mailingJobs = await listMailingJobs();
-  const leadsById = new Map(leads.map((lead) => [lead.id, lead]));
+  let rows: Array<{ dispute: any; mailingJob: any; lead?: any }> = [];
+  let leadsById = new Map();
+  let paymentsByDisputeId = new Map();
+  let queueError: string | null = null;
 
-  const rows = disputes.reduce<
-    Array<{ dispute: (typeof disputes)[number]; mailingJob: (typeof mailingJobs)[number]; lead?: (typeof leads)[number] }>
-  >((acc, dispute) => {
-    const mailingJob = mailingJobs.find((job) => job.disputeId === dispute.id);
-    if (!mailingJob) {
+  try {
+    const leads = getAllLeads();
+    const disputes = await listDisputes();
+    const mailingJobs = await listMailingJobs();
+    leadsById = new Map(leads.map((lead) => [lead.id, lead]));
+
+    rows = disputes.reduce<
+      Array<{ dispute: (typeof disputes)[number]; mailingJob: (typeof mailingJobs)[number]; lead?: (typeof leads)[number] }>
+    >((acc, dispute) => {
+      const mailingJob = mailingJobs.find((job) => job.disputeId === dispute.id);
+      if (!mailingJob) {
+        return acc;
+      }
+
+      acc.push({
+        dispute,
+        mailingJob,
+        lead: leadsById.get(dispute.leadId),
+      });
       return acc;
-    }
+    }, []);
 
-    acc.push({
-      dispute,
-      mailingJob,
-      lead: leadsById.get(dispute.leadId),
-    });
-    return acc;
-  }, []);
-
-  const paymentEntries = await Promise.all(
-    disputes.map(async (dispute) => [dispute.id, await getPaymentRecordByDisputeId(dispute.id)] as const),
-  );
-  const paymentsByDisputeId = new Map(
-    paymentEntries.filter((entry): entry is readonly [string, NonNullable<(typeof entry)[1]>] => Boolean(entry[1])),
-  );
+    const paymentEntries = await Promise.all(
+      disputes.map(async (dispute) => [dispute.id, await getPaymentRecordByDisputeId(dispute.id)] as const),
+    );
+    paymentsByDisputeId = new Map(
+      paymentEntries.filter((entry): entry is readonly [string, NonNullable<(typeof entry)[1]>] => Boolean(entry[1])),
+    );
+  } catch (error) {
+    console.error("admin_mail_queue_load_failed", error);
+    queueError = "Mail queue data could not be loaded.";
+  }
 
   return (
     <div className="page-rhythm">
@@ -68,6 +82,8 @@ export default async function AdminMailQueuePage() {
               rows={rows}
               leadsById={leadsById}
               paymentsByDisputeId={paymentsByDisputeId}
+              errorMessage={queueError}
+              successMessage={searchParams?.mailing === "sent" ? "Mail item queued successfully." : null}
             />
           </div>
         </div>

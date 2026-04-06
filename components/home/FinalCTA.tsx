@@ -11,7 +11,7 @@ export function FinalCTA() {
         <div className="max-w-4xl space-y-4">
           <p className="eyebrow">Your next move starts here</p>
           <h2 className="display-title-lg break-words text-text-dark [overflow-wrap:anywhere]">
-            Better credit. Clearer process. No upfront fee.
+            Better credit. Clearer process.
           </h2>
           <p className="mx-auto max-w-2xl text-sm leading-7 text-zinc-600 md:text-lg md:leading-8">
             Start your file, upload what is needed, and move into review with a clear next step. {PAYMENT_RELEASE_COPY}
@@ -26,7 +26,7 @@ export function FinalCTA() {
         </div>
 
         <p className="hidden max-w-2xl text-sm leading-7 text-zinc-500 md:block">
-          Clear process. Cleaner options. Stronger trust. Built to feel premium without turning the client journey into clutter.
+          Clear process. Stronger trust. Built to feel premium without clutter.
         </p>
         <p className="text-xs uppercase tracking-[0.18em] text-zinc-500">
           Returning client?{" "}

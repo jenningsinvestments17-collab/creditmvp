@@ -2,9 +2,10 @@ import type { ContractDocument, Lead, RequiredDocument } from "@/lib/types";
 
 export type IntakeStepId =
   | "profile"
-  | "disclosures"
-  | "contracts"
   | "documents"
+  | "disclosures"
+  | "assignment"
+  | "contracts"
   | "review";
 
 export type IntakeStepStatus = "complete" | "current" | "locked";
@@ -42,6 +43,10 @@ export type IntakeViewModel = {
   progressSteps: IntakeProgressStep[];
   profile: IntakeProfileData;
   disclosuresAccepted: boolean;
+  disclosureAcceptedAt?: string;
+  assignmentAccepted: boolean;
+  assignmentAcceptedAt?: string;
+  assignmentPercentage: number;
   contractsAccepted: boolean;
   reviewReady: boolean;
   documentsReady: boolean;

@@ -1,4 +1,3 @@
-import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -8,9 +7,8 @@ const clientPassword = process.env.STAGING_CLIENT_PASSWORD;
 const clientLeadId = process.env.STAGING_CLIENT_LEAD_ID;
 const adminEmail = process.env.STAGING_ADMIN_EMAIL;
 const adminPassword = process.env.STAGING_ADMIN_PASSWORD;
-const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-if (!baseUrl || !clientEmail || !clientPassword || !clientLeadId || !adminEmail || !adminPassword || !stripeWebhookSecret) {
+if (!baseUrl || !clientEmail || !clientPassword || !clientLeadId || !adminEmail || !adminPassword) {
   console.error("Missing required staging smoke-test environment variables.");
   process.exit(1);
 }
@@ -98,31 +96,6 @@ async function uploadDocument(clientJar, documentKey, filePath) {
   }
 }
 
-function stripeSignatureHeader(payload) {
-  const timestamp = Math.floor(Date.now() / 1000);
-  const signedPayload = `${timestamp}.${payload}`;
-  const signature = crypto
-    .createHmac("sha256", stripeWebhookSecret)
-    .update(signedPayload, "utf8")
-    .digest("hex");
-  return `t=${timestamp},v1=${signature}`;
-}
-
-async function postStripeWebhook(event) {
-  const payload = JSON.stringify(event);
-  const response = await fetch(`${baseUrl}/api/stripe/webhook`, {
-    method: "POST",
-    body: payload,
-    headers: {
-      "content-type": "application/json",
-      "stripe-signature": stripeSignatureHeader(payload),
-    },
-  });
-  if (!response.ok) {
-    throw new Error(`Stripe webhook failed: ${response.status} ${await response.text()}`);
-  }
-}
-
 async function main() {
   const health = await fetch(`${baseUrl}/api/health`);
   if (!health.ok) {
@@ -154,46 +127,10 @@ async function main() {
   form.set("returnTo", `/admin/leads/${clientLeadId}`);
   await postForm(`${baseUrl}/api/disputes/${leadDisputeId}/payment`, form, adminJar);
 
-  await postStripeWebhook({
-    id: `evt_smoke_success_${Date.now()}`,
-    object: "event",
-    type: "payment_intent.succeeded",
-    livemode: false,
-    created: Math.floor(Date.now() / 1000),
-    data: {
-      object: {
-        id: `pi_smoke_${Date.now()}`,
-        object: "payment_intent",
-        metadata: {
-          disputeId: leadDisputeId,
-        },
-      },
-    },
-  });
-
   form = new FormData();
   form.set("disputeId", leadDisputeId);
   form.set("returnTo", "/admin/mail-queue");
   await postForm(`${baseUrl}/api/mailing/send`, form, adminJar);
-
-  await postStripeWebhook({
-    id: `evt_smoke_tracking_${Date.now()}`,
-    object: "event",
-    type: "charge.updated",
-    livemode: false,
-    created: Math.floor(Date.now() / 1000),
-    data: {
-      object: {
-        id: `ch_smoke_${Date.now()}`,
-        object: "charge",
-        metadata: {
-          disputeId: leadDisputeId,
-          tracking_number: `9405${Date.now().toString().slice(-8)}`,
-          delivery_status: "delivered",
-        },
-      },
-    },
-  });
 
   console.log(
     JSON.stringify(

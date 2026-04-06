@@ -14,15 +14,6 @@ import {
 } from "@/lib/mailing/repository";
 import { DashboardPaymentStatus, upsertDashboardPayment } from "@/lib/db/dashboardPayments";
 import { sendCertifiedMailToProvider } from "@/lib/mailing/sendCertifiedMail";
-import { createMailingCheckout } from "@/lib/stripe/createMailingCheckout";
-import {
-  buildStripeIntentIds,
-  resolveAppBaseUrl,
-  isAuthorizationExpired,
-  isPaymentAuthorized,
-  isPaymentSettled,
-  requiresPaymentMethodUpdate,
-} from "@/lib/stripe/service";
 import { bureauRecipients } from "@/lib/disputes/mailing";
 import { defaultSenderAddress } from "@/lib/mailing/sender";
 import {
@@ -34,6 +25,12 @@ import {
   queuePaymentRequiredNotifications,
   queuePaymentSuccessNotifications,
 } from "@/lib/services/notifications";
+import {
+  isAuthorizationExpired,
+  isPaymentAuthorized,
+  isPaymentSettled,
+  requiresPaymentMethodUpdate,
+} from "@/lib/mailing/paymentState";
 import type { MailingJobRecord, PaymentRecord } from "@/lib/types";
 
 function nowIso() {
@@ -42,6 +39,10 @@ function nowIso() {
 
 function authorizationExpiryIso() {
   return new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+}
+
+function resolveAppBaseUrl(origin?: string) {
+  return (origin || env.NEXT_PUBLIC_APP_URL || env.APP_BASE_URL).replace(/\/$/, "");
 }
 
 async function emitPaymentEvent(
@@ -97,8 +98,6 @@ async function syncDashboardPaymentSnapshot(input: {
   capturedAt?: string;
   serviceRenderedAt?: string;
   lastFailureReason?: string;
-  checkoutSessionId?: string;
-  paymentIntentId?: string;
   metadata?: Record<string, unknown>;
 }) {
   const user = input.leadEmail ? await findUserByEmail(input.leadEmail) : null;
@@ -114,8 +113,6 @@ async function syncDashboardPaymentSnapshot(input: {
     capturedAt: input.capturedAt ? new Date(input.capturedAt) : null,
     serviceRenderedAt: input.serviceRenderedAt ? new Date(input.serviceRenderedAt) : null,
     lastFailureReason: input.lastFailureReason ?? null,
-    checkoutSessionId: input.checkoutSessionId ?? null,
-    paymentIntentId: input.paymentIntentId ?? null,
     metadata: input.metadata,
   });
 }
@@ -137,17 +134,9 @@ export async function createMailingPaymentRequest(
   const existing = await getPaymentRecordByDisputeId(disputeId);
   const lead = getLeadById(dispute.leadId);
   if (!lead?.email) {
-    throw new Error("Lead email is required before creating the Stripe checkout session.");
+    throw new Error("Lead email is required before creating the payment request.");
   }
   const baseUrl = resolveAppBaseUrl(options?.baseUrl);
-  const checkout = await createMailingCheckout({
-    disputeId,
-    leadId: dispute.leadId,
-    leadEmail: lead.email,
-    amountCents: existing?.amountCents ?? 40500,
-    successUrl: `${baseUrl}/dashboard?mailingPayment=${disputeId}&status=authorized`,
-    cancelUrl: `${baseUrl}/dashboard?mailingPayment=${disputeId}&status=cancelled`,
-  });
 
   const payment: PaymentRecord = {
     id: existing?.id ?? `payment_${disputeId}`,
@@ -156,10 +145,8 @@ export async function createMailingPaymentRequest(
     amountCents: existing?.amountCents ?? 40500,
     currency: "usd",
     status: "payment_required",
-    stripePaymentIntentId: checkout.paymentIntentId,
-    stripeCheckoutSessionId: checkout.checkoutSessionId,
-    checkoutUrl: checkout.hostedUrl,
-    updatePaymentMethodUrl: checkout.updatePaymentMethodUrl,
+    checkoutUrl: `${baseUrl}/dashboard?mailingPayment=${disputeId}&status=payment_required`,
+    updatePaymentMethodUrl: undefined,
     requestedAt: existing?.requestedAt ?? requestedAt,
     retryCount: existing ? (existing.retryCount ?? 0) + 1 : 0,
     lastRetryAt: existing ? requestedAt : undefined,
@@ -194,8 +181,6 @@ export async function createMailingPaymentRequest(
     "system",
     "mailing_payment_service",
     {
-      checkoutSessionId: payment.stripeCheckoutSessionId,
-      paymentIntentId: payment.stripePaymentIntentId,
       checkoutUrl: payment.checkoutUrl,
     },
   );
@@ -209,8 +194,6 @@ export async function createMailingPaymentRequest(
       status: DashboardPaymentStatus.payment_required,
       requestedAt: payment.requestedAt,
       serviceRenderedAt: dispute.serviceRenderedAt ? dispute.serviceRenderedAt : requestedAt,
-      checkoutSessionId: payment.stripeCheckoutSessionId,
-      paymentIntentId: payment.stripePaymentIntentId,
       metadata: {
         workflowStatus: dispute.workflowStatus,
       },
@@ -221,7 +204,7 @@ export async function createMailingPaymentRequest(
     });
   }
 
-  return { payment, checkout };
+  return { payment };
 }
 
 export async function createOrRefreshPaymentMethodAuthorization(
@@ -286,7 +269,7 @@ export async function ensureFinalPaymentRequestOpen(
 
 export async function authorizeMailingPayment(
   disputeId: string,
-  actorId = "stripe_webhook",
+  actorId = "payment_event",
 ) {
   const { dispute } = await getDisputeById(disputeId);
   const payment = await getPaymentRecordByDisputeId(disputeId);
@@ -342,9 +325,7 @@ export async function authorizeMailingPayment(
     status: DashboardPaymentStatus.authorized,
     requestedAt: nextPayment.requestedAt,
     authorizedAt: nextPayment.authorizedAt,
-      serviceRenderedAt: dispute.serviceRenderedAt ?? nextPayment.requestedAt,
-    checkoutSessionId: nextPayment.stripeCheckoutSessionId,
-    paymentIntentId: nextPayment.stripePaymentIntentId,
+    serviceRenderedAt: dispute.serviceRenderedAt ?? nextPayment.requestedAt,
   });
 
   return nextPayment;
@@ -353,7 +334,7 @@ export async function authorizeMailingPayment(
 export async function markMailingPaymentFailure(
   disputeId: string,
   reason = "Payment could not be confirmed.",
-  actorId = "stripe_webhook",
+  actorId = "payment_event",
 ) {
   const { dispute } = await getDisputeById(disputeId);
   const existing = await getPaymentRecordByDisputeId(disputeId);
@@ -367,7 +348,6 @@ export async function markMailingPaymentFailure(
   }
 
   const failedAt = nowIso();
-  const ids = buildStripeIntentIds(disputeId);
   const nextPayment: PaymentRecord = {
     id: existing?.id ?? `payment_${disputeId}`,
     disputeId,
@@ -375,8 +355,6 @@ export async function markMailingPaymentFailure(
     amountCents: existing?.amountCents ?? 40500,
     currency: "usd",
     status: "payment_failed",
-    stripePaymentIntentId: ids.paymentIntentId,
-    stripeCheckoutSessionId: ids.checkoutSessionId,
     checkoutUrl:
       existing?.checkoutUrl ??
       `/dashboard?mailingPayment=${disputeId}&status=payment_required`,
@@ -424,10 +402,8 @@ export async function markMailingPaymentFailure(
     currency: nextPayment.currency,
     status: DashboardPaymentStatus.payment_failed,
     requestedAt: nextPayment.requestedAt,
-      serviceRenderedAt: dispute.serviceRenderedAt ?? nextPayment.requestedAt,
+    serviceRenderedAt: dispute.serviceRenderedAt ?? nextPayment.requestedAt,
     lastFailureReason: nextPayment.lastFailureReason,
-    checkoutSessionId: nextPayment.stripeCheckoutSessionId,
-    paymentIntentId: nextPayment.stripePaymentIntentId,
   });
 
   return nextPayment;
@@ -479,8 +455,6 @@ export async function captureMailingPayment(
       authorizedAt: expired.authorizedAt,
       serviceRenderedAt: dispute.serviceRenderedAt ?? expired.requestedAt,
       lastFailureReason: expired.lastFailureReason,
-      checkoutSessionId: expired.stripeCheckoutSessionId,
-      paymentIntentId: expired.stripePaymentIntentId,
     });
     throw new Error("Payment authorization expired. Client must update payment method.");
   }
@@ -555,8 +529,6 @@ export async function captureMailingPayment(
       authorizedAt: capturedPayment.authorizedAt,
       capturedAt,
       serviceRenderedAt: dispute.serviceRenderedAt ?? capturedPayment.requestedAt,
-      checkoutSessionId: capturedPayment.stripeCheckoutSessionId,
-      paymentIntentId: capturedPayment.stripePaymentIntentId,
       metadata: {
         workflowStatus: paidReadyStatus,
       },

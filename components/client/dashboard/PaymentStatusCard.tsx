@@ -1,4 +1,5 @@
 import type { ClientDashboardViewModel } from "@/types/dashboard";
+import { PAYMENT_RELEASE_COPY } from "@/components/home/paymentCopy";
 
 export function PaymentStatusCard({ model }: { model: ClientDashboardViewModel }) {
   if (!model.showPaymentCard || !model.dispute) {
@@ -10,9 +11,11 @@ export function PaymentStatusCard({ model }: { model: ClientDashboardViewModel }
       <div className="space-y-3">
         <p className="eyebrow">Payment status</p>
         <h3 className="font-display text-4xl uppercase leading-[0.92] tracking-[0.03em] text-white">
-          No upfront fee. Payment only after service.
+          Payment release status
         </h3>
-        <p className="text-sm leading-7 text-zinc-300">{model.paymentSummary.note}</p>
+        <p className="text-sm leading-7 text-zinc-300">
+          {PAYMENT_RELEASE_COPY} {model.paymentSummary.note}
+        </p>
       </div>
 
       <div className="mt-5 grid gap-3 sm:grid-cols-3">

@@ -340,7 +340,8 @@ export async function getAdminNotificationAlerts() {
       summary: await getNotificationQueueSummary(),
       alerts: await getAdminAlerts(),
     };
-  } catch {
+  } catch (error) {
+    console.error("admin_notification_alerts_failed", error);
     return {
       summary: {
         total: 0,

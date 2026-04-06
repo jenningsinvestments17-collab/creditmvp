@@ -23,16 +23,21 @@ export function CertifiedMailQueueTable({
   rows,
   leadsById,
   paymentsByDisputeId,
+  errorMessage,
+  successMessage,
 }: {
   rows: Array<{ dispute: DisputeRecord; mailingJob: MailingJobRecord; lead?: Lead | undefined }>;
   leadsById: Map<string, Lead>;
   paymentsByDisputeId: Map<string, PaymentRecord>;
+  errorMessage?: string | null;
+  successMessage?: string | null;
 }) {
   const summary = {
     total: rows.length,
     mailed: rows.filter((row) =>
       ["accepted", "tracking_received", "delivered"].includes(row.mailingJob.providerStatus),
     ).length,
+    failed: rows.filter((row) => row.mailingJob.providerStatus === "failed").length,
   };
 
   return (
@@ -52,11 +57,30 @@ export function CertifiedMailQueueTable({
             <span className="rounded-full border border-black/10 bg-surface-light-soft px-4 py-2 text-[11px] uppercase tracking-[0.22em] text-zinc-600">
               {summary.mailed} provider-submitted
             </span>
+            <span className="rounded-full border border-black/10 bg-surface-light-soft px-4 py-2 text-[11px] uppercase tracking-[0.22em] text-zinc-600">
+              {summary.failed} failed
+            </span>
           </div>
         </div>
 
+        {successMessage ? (
+          <div className="rounded-[1.2rem] border border-emerald-400/20 bg-emerald-500/10 px-4 py-4 text-sm leading-7 text-emerald-800">
+            {successMessage}
+          </div>
+        ) : null}
+
+        {errorMessage ? (
+          <div className="rounded-[1.2rem] border border-rose-400/20 bg-rose-500/10 px-4 py-4 text-sm leading-7 text-rose-700">
+            {errorMessage}
+          </div>
+        ) : null}
+
         <div className="grid gap-3">
-          {rows.map(({ dispute, mailingJob, lead }) => {
+          {!rows.length ? (
+            <div className="rounded-[1.2rem] border border-black/10 bg-surface-light-soft px-4 py-4 text-sm leading-7 text-zinc-600">
+              No queued mail items available.
+            </div>
+          ) : rows.map(({ dispute, mailingJob, lead }) => {
             const resolvedLead = lead ?? leadsById.get(mailingJob.leadId);
             const payment = paymentsByDisputeId.get(dispute.id);
 
@@ -115,6 +139,18 @@ export function CertifiedMailQueueTable({
                   >
                     View Final PDF
                   </a>
+                  {mailingJob.providerStatus === "failed" ? (
+                    <form method="POST" action="/api/mailing/send">
+                      <input type="hidden" name="disputeId" value={dispute.id} />
+                      <input type="hidden" name="returnTo" value="/admin/mail-queue" />
+                      <button
+                        type="submit"
+                        className="inline-flex min-h-11 items-center justify-center rounded-[0.9rem] border border-black/10 bg-white px-4 text-sm font-semibold uppercase tracking-[0.08em] text-text-dark transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/45 hover:text-[#7d6434]"
+                      >
+                        Retry Failed Item
+                      </button>
+                    </form>
+                  ) : null}
                   {mailingJob.signedReturnReceiptPath ? (
                     <a
                       href={mailingJob.signedReturnReceiptPath}

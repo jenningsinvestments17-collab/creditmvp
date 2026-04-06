@@ -7,8 +7,6 @@ type EnvShape = {
   ADMIN_BOOTSTRAP_PASSWORD: string;
   NEXT_PUBLIC_APP_URL: string;
   APP_BASE_URL: string;
-  STRIPE_SECRET_KEY: string;
-  STRIPE_WEBHOOK_SECRET: string;
   CERTIFIED_MAIL_PROVIDER: "lob" | "click2mail";
   NOTIFICATION_EMAIL_FROM: string;
   NOTIFICATION_EMAIL_PROVIDER: "placeholder";
@@ -71,8 +69,6 @@ function buildEnv(): EnvShape {
       process.env.APP_BASE_URL?.trim() || baseUrl,
       "APP_BASE_URL",
     ),
-    STRIPE_SECRET_KEY: required("STRIPE_SECRET_KEY"),
-    STRIPE_WEBHOOK_SECRET: required("STRIPE_WEBHOOK_SECRET"),
     CERTIFIED_MAIL_PROVIDER:
       (process.env.CERTIFIED_MAIL_PROVIDER?.trim().toLowerCase() === "click2mail"
         ? "click2mail"

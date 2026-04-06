@@ -32,7 +32,7 @@ export function ReviewAndSignPanel({
           {document.label}
         </h2>
         <p className="text-sm leading-7 text-zinc-400">
-          Read the document, acknowledge it, and complete the signature step to keep onboarding moving forward.
+          Read the document carefully, confirm the disclosure and cancellation language, and complete the signature step to keep onboarding moving forward.
         </p>
       </div>
 
@@ -45,7 +45,7 @@ export function ReviewAndSignPanel({
       <div className="mt-5 grid gap-3">
         <label className="flex items-start gap-3 rounded-[1rem] border border-white/10 bg-white/[0.04] px-4 py-4 text-sm leading-7 text-zinc-300">
           <input type="checkbox" className="mt-1" />
-          <span>I have reviewed this document and understand what I am signing.</span>
+          <span>I have reviewed this document, including the service description, fee language, and cancellation rights.</span>
         </label>
         <div className="rounded-[1rem] border border-white/10 bg-white/[0.04] px-4 py-4 text-sm leading-7 text-zinc-300">
           Signature placeholder: this area is ready for real e-sign capture, provider integration,

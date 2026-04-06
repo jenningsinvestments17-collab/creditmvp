@@ -31,8 +31,7 @@ export default async function DashboardContractsPage({
               </h1>
             </div>
             <p className="section-copy">
-              These documents are part of onboarding and need your review before the process
-              can move forward. Signed versus unsigned state is kept visible so you always know what is next.
+              These documents are part of onboarding and need your review before the process can move forward. Service terms, assignment terms, fee language, and cancellation rights stay visible so you always know what is next.
             </p>
           </div>
 
@@ -54,9 +53,9 @@ export default async function DashboardContractsPage({
                 eyebrow="What happens next"
                 title="Signing moves onboarding forward."
                 items={[
-                  "Review each required document before signing.",
-                  "Completed signatures will later update your onboarding status automatically.",
-                  "After the packet is fully signed, the portal can move you into the next stage without confusion.",
+                  "Review each required document before signing, including the assignment of claims agreement.",
+                  "The fee language stays limited to drafting and sending dispute letters and related correspondence.",
+                  "The five-business-day cancellation right remains visible before signature and payment release.",
                 ]}
               />
             </section>

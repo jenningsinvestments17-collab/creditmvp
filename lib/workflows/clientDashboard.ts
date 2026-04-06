@@ -183,7 +183,7 @@ export function buildClientJourneySteps(
       label: "Paid",
       detail: paymentReady
         ? "Your post-service payment is secured."
-        : "No upfront fee. Payment only opens after service is rendered and approved.",
+        : "No upfront fees. Payment only happens once your file is completed and approved for release.",
       status: paymentReady ? "complete" : approved ? "current" : "upcoming",
       href: "/dashboard",
     },
@@ -253,7 +253,7 @@ export function buildClientDisputeTimeline(
       label: "Payment secured after service",
       detail: paymentReady
         ? "Your payment method is secured for the final mailing release."
-        : "No upfront fee is collected. Payment only becomes active after service is rendered and the final dispute is ready for release.",
+        : "No upfront fees. Payment only happens once your file is completed and approved for release.",
       status: paymentReady ? "complete" : adminReviewed ? "current" : "upcoming",
     },
     {
@@ -296,12 +296,6 @@ export function buildClientDashboardState(input: {
     dispute && shouldShowPaymentCta(payment, Boolean(dispute.serviceRenderedAt && dispute.approvedAt)),
   );
   const showMailingCard = Boolean(dispute && mailingJob);
-  const paymentActionHref = payment?.updatePaymentMethodUrl ?? payment?.checkoutUrl;
-  const paymentActionLabel =
-    payment?.status === "payment_failed" || payment?.status === "authorization_expired"
-      ? "Update Card"
-      : "Pay Now";
-
   return {
     progressPercent: progress.completionPercent,
     stepNumber: progress.currentStepNumber,
@@ -336,8 +330,8 @@ export function buildClientDashboardState(input: {
           payment.status === "authorized" ||
           payment.status === "ready_to_capture"
           ? "Your payment method is secured only after service reaches the final release point."
-          : "No upfront fee is charged. Payment only becomes active after your dispute is approved and service is rendered."
-        : "No upfront fee. The mailing payment only appears after the dispute is approved, service is rendered, and the final PDF is prepared.",
+          : "No upfront fees. Payment only happens once your file is completed and approved for release."
+        : "No upfront fees. Payment only happens once your file is completed and approved for release.",
       amountLabel: "$405 service release",
     },
     mailingSummary: {
@@ -351,19 +345,19 @@ export function buildClientDashboardState(input: {
         : "The portal will show provider submission and tracking here once the final dispute enters certified mail.",
     },
     supportFaqs: [
-      "You do not pay the $405 service release upfront. It only appears after the dispute is approved, service is rendered, and ready for mailing.",
+      "No upfront fees. Payment only happens once your file is completed and approved for release.",
       "AI drafting does not start until the required bureau reports and supporting documents are uploaded, validated, and parse-ready.",
-      "If a payment method fails, mailing stays paused until you update the card through the secure portal link.",
+      "If release coordination changes, the portal will reflect that before certified mailing continues.",
     ],
     trustNotes: [
-      "No upfront service fee. Payment only appears after the work reaches the final release point.",
+      "No upfront fees. Payment only happens once your file is completed and approved for release.",
       "Uploads, review, contracts, payment, and mailing stay connected inside one portal.",
       "Every return visit sends you back to the right step instead of restarting your file.",
     ],
     showPaymentCard,
     showMailingCard,
-    paymentActionHref,
-    paymentActionLabel,
+    paymentActionHref: undefined,
+    paymentActionLabel: "Review Release Status",
   } satisfies Omit<
     ClientDashboardViewModel,
     | "lead"

@@ -105,7 +105,7 @@ export function LeadRow({
   const parserSignal = getParserSignal(parsedReports);
   const stageVisuals = getStageVisuals(statusBar.stage);
   const phoneVisible = statusBar.showPhone;
-  const stripeVisible = statusBar.showStripe;
+  const paymentVisible = statusBar.showPayment;
   const vibrationClass = statusBar.isVibrating ? "status-vibrate" : "";
 
   return (
@@ -144,12 +144,12 @@ export function LeadRow({
                 &#9742;
               </span>
             ) : null}
-            {stripeVisible ? (
+            {paymentVisible ? (
               <span
-                title="Stripe pre-authorization / payment gate"
+                title="Payment release gate"
                 className="status-vibrate inline-flex h-10 items-center justify-center rounded-full border border-sky-400/25 bg-sky-500/12 px-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-sky-700"
               >
-                Stripe
+                Payment
               </span>
             ) : null}
             {parserSignal ? (

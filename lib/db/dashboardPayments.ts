@@ -13,8 +13,6 @@ export async function upsertDashboardPayment(input: {
   capturedAt?: Date | null;
   serviceRenderedAt?: Date | null;
   lastFailureReason?: string | null;
-  checkoutSessionId?: string | null;
-  paymentIntentId?: string | null;
   metadata?: Record<string, unknown>;
 }) {
   return prisma.dashboardPayment.upsert({
@@ -31,8 +29,6 @@ export async function upsertDashboardPayment(input: {
       capturedAt: input.capturedAt ?? null,
       serviceRenderedAt: input.serviceRenderedAt ?? null,
       lastFailureReason: input.lastFailureReason ?? null,
-      checkoutSessionId: input.checkoutSessionId ?? null,
-      paymentIntentId: input.paymentIntentId ?? null,
       metadata: input.metadata ?? {},
     },
     update: {
@@ -46,8 +42,6 @@ export async function upsertDashboardPayment(input: {
       capturedAt: input.capturedAt ?? null,
       serviceRenderedAt: input.serviceRenderedAt ?? null,
       lastFailureReason: input.lastFailureReason ?? null,
-      checkoutSessionId: input.checkoutSessionId ?? null,
-      paymentIntentId: input.paymentIntentId ?? null,
       metadata: input.metadata ?? {},
     },
   });

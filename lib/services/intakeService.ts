@@ -4,6 +4,7 @@ import { assertCurrentActionOrigin } from "@/lib/security/request";
 import {
   intakeContractsSchema,
   intakeDisclosureSchema,
+  intakeAssignmentSchema,
   intakeProfileSchema,
   intakeReviewSchema,
 } from "@/lib/validators/intake";
@@ -60,15 +61,17 @@ export async function buildIntakeViewModel(input: {
       profile.state &&
       profile.primaryGoal,
   );
-  const disclosuresAccepted = Boolean(intakeForm.disclosuresAcceptedAt);
+  const disclosuresAccepted = Boolean(intakeForm.disclosureAccepted);
+  const assignmentAccepted = Boolean(intakeForm.assignmentAccepted);
   const contractsAccepted = Boolean(intakeForm.contractsAcceptedAt);
   const documentsReady = deriveDocumentsReady(input.lead);
   const reviewReady = deriveReviewReady(input.lead) && documentsReady;
   const allowedStep = getAllowedIntakeStep({
     profileCompleted,
-    disclosuresAccepted,
-    contractsAccepted,
     documentsReady,
+    disclosuresAccepted,
+    assignmentAccepted,
+    contractsAccepted,
   });
 
   return {
@@ -85,6 +88,10 @@ export async function buildIntakeViewModel(input: {
     }),
     profile,
     disclosuresAccepted,
+    disclosureAcceptedAt: intakeForm.disclosureAcceptedAt?.toISOString(),
+    assignmentAccepted,
+    assignmentAcceptedAt: intakeForm.assignmentAcceptedAt?.toISOString(),
+    assignmentPercentage: intakeForm.assignmentPercentage,
     contractsAccepted,
     reviewReady,
     documentsReady,
@@ -92,13 +99,13 @@ export async function buildIntakeViewModel(input: {
     contractDocuments: input.lead.contractDocuments,
     banners: buildBanners(input.searchParams),
     acknowledgments: [
-      "No skipping. Disclosures and onboarding acknowledgments must be completed before uploads open.",
-      "Required documents must be in the file before intake review can be completed.",
+      "Required documents come first so the legal packet is reviewed against the real file.",
+      "Consumer disclosure must be accepted before contract review or any payment release step.",
       "Your intake resumes from the next unlocked step each time you come back.",
     ],
     uploadGateCopy: documentsReady
-      ? "The required upload gate is satisfied, so this file can move toward review."
-      : "Uploads stay locked to the required document gate. All three bureau reports, valid ID, and proof of address must be in before review can be completed.",
+      ? "The required upload gate is satisfied, so the file can move into disclosure and assignment review."
+      : "Uploads stay locked to the required document gate. All three bureau reports, valid ID, and proof of address must be in before disclosure and contract review can continue.",
   };
 }
 
@@ -132,8 +139,22 @@ export async function saveProfileStepAction(userId: string, formData: FormData) 
   }
 
   await updateIntakeForm(userId, {
-    currentStep: "disclosures",
+    currentStep: "documents",
     profileData: parsed.data,
+  });
+  redirect("/intake/documents");
+}
+
+export async function completeDocumentsStepAction(userId: string, lead: Lead) {
+  "use server";
+  assertCurrentActionOrigin();
+
+  if (!deriveDocumentsReady(lead)) {
+    redirect("/intake/documents?error=1");
+  }
+
+  await updateIntakeForm(userId, {
+    currentStep: "disclosures",
   });
   redirect("/intake/disclosures");
 }
@@ -142,7 +163,6 @@ export async function saveDisclosuresStepAction(userId: string, formData: FormDa
   "use server";
   assertCurrentActionOrigin();
   const parsed = intakeDisclosureSchema.safeParse({
-    accuracyAcknowledged: formData.get("accuracyAcknowledged"),
     disclosureAcknowledged: formData.get("disclosureAcknowledged"),
   });
 
@@ -151,8 +171,29 @@ export async function saveDisclosuresStepAction(userId: string, formData: FormDa
   }
 
   await updateIntakeForm(userId, {
+    currentStep: "assignment",
+    disclosureAccepted: true,
+    disclosureAcceptedAt: new Date(),
+  });
+  redirect("/intake/assignment");
+}
+
+export async function saveAssignmentStepAction(userId: string, formData: FormData) {
+  "use server";
+  assertCurrentActionOrigin();
+  const parsed = intakeAssignmentSchema.safeParse({
+    assignmentAcknowledged: formData.get("assignmentAcknowledged"),
+  });
+
+  if (!parsed.success) {
+    redirect("/intake/assignment?error=1");
+  }
+
+  await updateIntakeForm(userId, {
     currentStep: "contracts",
-    disclosuresAcceptedAt: new Date(),
+    assignmentAccepted: true,
+    assignmentAcceptedAt: new Date(),
+    assignmentPercentage: 50,
   });
   redirect("/intake/contracts");
 }
@@ -162,7 +203,7 @@ export async function saveContractsStepAction(userId: string, formData: FormData
   assertCurrentActionOrigin();
   const parsed = intakeContractsSchema.safeParse({
     contractAcknowledged: formData.get("contractAcknowledged"),
-    authorizationAcknowledged: formData.get("authorizationAcknowledged"),
+    cancellationAcknowledged: formData.get("cancellationAcknowledged"),
   });
 
   if (!parsed.success) {
@@ -170,10 +211,10 @@ export async function saveContractsStepAction(userId: string, formData: FormData
   }
 
   await updateIntakeForm(userId, {
-    currentStep: "documents",
+    currentStep: "review",
     contractsAcceptedAt: new Date(),
   });
-  redirect("/intake/documents");
+  redirect("/intake/review");
 }
 
 export async function markDocumentsStepVisited(userId: string) {

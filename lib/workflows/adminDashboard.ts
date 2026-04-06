@@ -33,6 +33,7 @@ export function buildAdminDashboardViewState(input: {
   adminRole: string;
   query: string;
   reminder?: string;
+  alertErrorMessages?: string[];
   commandCenter: CommandCenterModel;
   profitDashboard: ProfitModel;
   notificationAlerts: NotificationModel;
@@ -43,6 +44,7 @@ export function buildAdminDashboardViewState(input: {
     adminRole,
     query,
     reminder,
+    alertErrorMessages = [],
     commandCenter,
     profitDashboard,
     notificationAlerts,
@@ -183,6 +185,10 @@ export function buildAdminDashboardViewState(input: {
     query,
     notificationCount: notificationAlerts.summary.pending + notificationAlerts.summary.failed,
     reminderMessage: reminder ? reminder.replaceAll("-", " ") : undefined,
+    alertsMeta: {
+      hasAlerts: caseAlerts.length + notificationItems.length + opsItems.length > 0,
+      errorMessages: alertErrorMessages,
+    },
     kpis,
     funnel: profitDashboard.funnel,
     revenueQueue: profitDashboard.revenueQueue,

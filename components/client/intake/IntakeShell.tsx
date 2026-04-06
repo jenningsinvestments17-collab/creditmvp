@@ -30,7 +30,7 @@ export function IntakeShell({
                   Guided onboarding.
                 </h1>
                 <p className="max-w-2xl text-base leading-8 text-zinc-300">
-                  Step-locked progression, secure uploads, and a clear resume point every time the client comes back.
+                  Step-locked progression, clean legal disclosures, and a clear resume point every time the client comes back.
                 </p>
               </div>
 

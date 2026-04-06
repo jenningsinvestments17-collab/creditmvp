@@ -340,17 +340,21 @@ model DashboardPayment {
 }
 
 model IntakeForm {
-  id                    String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  userId                String   @unique @map("user_id") @db.Uuid
-  currentStep           String   @default("profile") @map("current_step")
-  profileData           Json     @default("{}") @map("profile_data")
-  disclosuresAcceptedAt DateTime? @map("disclosures_accepted_at") @db.Timestamptz(6)
-  contractsAcceptedAt   DateTime? @map("contracts_accepted_at") @db.Timestamptz(6)
-  reviewCompletedAt     DateTime? @map("review_completed_at") @db.Timestamptz(6)
-  lastSavedAt           DateTime? @map("last_saved_at") @db.Timestamptz(6)
-  createdAt             DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt             DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
-  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                   String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId               String    @unique @map("user_id") @db.Uuid
+  currentStep          String    @default("profile") @map("current_step")
+  profileData          Json      @default("{}") @map("profile_data")
+  disclosureAccepted   Boolean   @default(false) @map("disclosure_accepted")
+  disclosureAcceptedAt DateTime? @map("disclosures_accepted_at") @db.Timestamptz(6)
+  assignmentAccepted   Boolean   @default(false) @map("assignment_accepted")
+  assignmentAcceptedAt DateTime? @map("assignment_accepted_at") @db.Timestamptz(6)
+  assignmentPercentage Int       @default(50) @map("assignment_percentage")
+  contractsAcceptedAt  DateTime? @map("contracts_accepted_at") @db.Timestamptz(6)
+  reviewCompletedAt    DateTime? @map("review_completed_at") @db.Timestamptz(6)
+  lastSavedAt          DateTime? @map("last_saved_at") @db.Timestamptz(6)
+  createdAt            DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt            DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([currentStep, updatedAt], map: "idx_intake_forms_current_step_updated_at")
   @@map("intake_forms")

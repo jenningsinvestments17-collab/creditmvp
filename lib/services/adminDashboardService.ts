@@ -65,6 +65,27 @@ export async function buildAdminDashboardViewModel(input: {
       getOpsDashboardModel(),
     ]);
 
+  const alertErrorMessages: string[] = [];
+
+  if (notificationAlertsResult.status === "rejected") {
+    console.error("admin_dashboard.notifications_failed", notificationAlertsResult.reason);
+    alertErrorMessages.push("Notification alerts could not be loaded.");
+  }
+
+  if (opsHealthResult.status === "rejected") {
+    console.error("admin_dashboard.ops_failed", opsHealthResult.reason);
+    alertErrorMessages.push("Operations alerts could not be loaded.");
+  }
+
+  if (profitDashboardResult.status === "rejected") {
+    console.error("admin_dashboard.profit_failed", profitDashboardResult.reason);
+    alertErrorMessages.push("Case alerts could not be loaded.");
+  }
+
+  if (commandCenterResult.status === "rejected") {
+    console.error("admin_dashboard.command_center_failed", commandCenterResult.reason);
+  }
+
   const commandCenter =
     commandCenterResult.status === "fulfilled"
       ? commandCenterResult.value
@@ -87,6 +108,7 @@ export async function buildAdminDashboardViewModel(input: {
     adminRole: input.adminRole,
     query: input.query ?? "",
     reminder: input.reminder,
+    alertErrorMessages,
     commandCenter,
     profitDashboard,
     notificationAlerts,

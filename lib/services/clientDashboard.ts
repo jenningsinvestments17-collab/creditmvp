@@ -224,7 +224,7 @@ function buildTimeline(
       label: "Payment secured after service",
       detail: paymentReady
         ? "Your payment method is secured for the final mailing release."
-        : "No upfront fee is collected. Payment is only secured once the service is ready for final mailing.",
+        : "No upfront fees. Payment only happens once your file is completed and approved for release.",
       status: paymentReady ? "complete" : adminReviewed ? "current" : "upcoming",
     },
     {
@@ -316,7 +316,7 @@ function buildJourneySteps(
       label: "Paid",
       detail: paymentReady
         ? "Your post-service payment is secured."
-        : "No upfront fee. Payment only opens after service reaches final release.",
+        : "No upfront fees. Payment only happens once your file is completed and approved for release.",
       status: paymentReady ? "complete" : approved ? "current" : "upcoming",
       href: "/dashboard",
     },
@@ -396,8 +396,8 @@ export function buildClientDashboardModel(input: {
           payment.status === "authorized" ||
           payment.status === "ready_to_capture"
           ? "Your payment method is secured only after service reaches the final release point."
-          : "No upfront fee is charged. Payment only becomes active after your dispute is reviewed and ready for mailing."
-        : "No upfront fee. The mailing payment only appears after the dispute is approved and the final PDF is prepared.",
+          : "No upfront fees. Payment only happens once your file is completed and approved for release."
+        : "No upfront fees. Payment only happens once your file is completed and approved for release.",
       amountLabel: "$405 service release",
     },
     mailingSummary: {
@@ -415,12 +415,12 @@ export function buildClientDashboardModel(input: {
     journeySteps,
     disputeTimeline: buildTimeline(lead, dispute, payment, mailingJob, events),
     trustNotes: [
-      "No upfront service fee. Payment only appears after the work reaches the final release point.",
+      "No upfront fees. Payment only happens once your file is completed and approved for release.",
       "Uploads, review, contracts, payment, and mailing stay connected inside one portal.",
       "Every return visit sends you back to the right step instead of restarting your file.",
     ],
     supportFaqs: [
-      "You do not pay the $405 service release upfront. It only appears after the dispute is approved and ready for final mailing.",
+      "No upfront fees. Payment only happens once your file is completed and approved for release.",
       "AI drafting does not start until the required bureau reports and supporting documents are in the file.",
       "If a payment method fails, mailing stays paused until you update the card through the secure portal link.",
     ],

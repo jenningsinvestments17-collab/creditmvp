@@ -57,12 +57,11 @@ export async function buildHealthModel() {
     checkRedisConnectivity(),
   ]);
 
-  const stripeConfigured = Boolean(env.STRIPE_SECRET_KEY && env.STRIPE_WEBHOOK_SECRET);
   const mailingProvider =
     env.CERTIFIED_MAIL_PROVIDER === "click2mail" ? "click2mail" : "lob";
 
   return {
-    ok: database.ok && redis.ok && stripeConfigured,
+    ok: database.ok && redis.ok,
     app: {
       environment: env.NODE_ENV,
       baseUrl: env.APP_BASE_URL,
@@ -70,10 +69,6 @@ export async function buildHealthModel() {
     dependencies: {
       database,
       redis,
-      stripe: {
-        ok: stripeConfigured,
-        detail: stripeConfigured ? "configured" : "missing Stripe keys",
-      },
       mailingProvider: {
         ok: true,
         detail: `${mailingProvider} adapter configured${mailingProvider ? " (provider API still requires live test credentials if you replace placeholder adapters)" : ""}`,

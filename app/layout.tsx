@@ -3,6 +3,7 @@ import { Inter, Oswald } from "next/font/google";
 import "@/app/globals.css";
 import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
+import { getCanonicalUrl, getMetadataBase } from "@/lib/site";
 
 const bodyFont = Inter({
   subsets: ["latin"],
@@ -16,8 +17,24 @@ const displayFont = Oswald({
 });
 
 export const metadata: Metadata = {
-  title: "Credu Consulting",
-  description: "Credit repair website foundation built with Next.js, TypeScript, and Tailwind CSS.",
+  metadataBase: getMetadataBase(),
+  title: {
+    default: "Credu Consulting",
+    template: "%s | Credu Consulting",
+  },
+  description:
+    "Structured credit consulting with a visible 3-bureau workflow, admin-reviewed disputes, and certified-mail tracking.",
+  alternates: {
+    canonical: getCanonicalUrl("/"),
+  },
+  openGraph: {
+    title: "Credu Consulting",
+    description:
+      "Structured credit consulting with a visible 3-bureau workflow, admin-reviewed disputes, and certified-mail tracking.",
+    url: getCanonicalUrl("/"),
+    siteName: "Credu Consulting",
+    type: "website",
+  },
 };
 
 export default function RootLayout({

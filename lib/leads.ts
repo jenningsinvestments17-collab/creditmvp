@@ -223,6 +223,7 @@ const mockLeads: Lead[] = [
         service_agreement: "sent",
         consumer_rights_disclosure: "sent",
         cancellation_form: "sent",
+        assignment_of_claims: "sent",
         authorization_release_information: "sent",
         authorization_submit_disputes: "sent",
         consumer_directed_dispute_authorization: "sent",
@@ -232,6 +233,7 @@ const mockLeads: Lead[] = [
         service_agreement: { sentAt: "2026-03-24T09:15:00.000Z" },
         consumer_rights_disclosure: { sentAt: "2026-03-24T09:15:00.000Z" },
         cancellation_form: { sentAt: "2026-03-24T09:15:00.000Z" },
+        assignment_of_claims: { sentAt: "2026-03-24T09:15:00.000Z" },
         authorization_release_information: { sentAt: "2026-03-24T09:15:00.000Z" },
         authorization_submit_disputes: { sentAt: "2026-03-24T09:15:00.000Z" },
         consumer_directed_dispute_authorization: { sentAt: "2026-03-24T09:15:00.000Z" },
@@ -269,6 +271,7 @@ const mockLeads: Lead[] = [
         service_agreement: "signed",
         consumer_rights_disclosure: "signed",
         cancellation_form: "awaiting_signature",
+        assignment_of_claims: "awaiting_signature",
         authorization_release_information: "signed",
         authorization_submit_disputes: "awaiting_signature",
         consumer_directed_dispute_authorization: "sent",
@@ -284,6 +287,7 @@ const mockLeads: Lead[] = [
           signedAt: "2026-03-24T11:25:00.000Z",
         },
         cancellation_form: { sentAt: "2026-03-24T11:00:00.000Z" },
+        assignment_of_claims: { sentAt: "2026-03-24T11:00:00.000Z" },
         authorization_release_information: {
           sentAt: "2026-03-24T11:00:00.000Z",
           signedAt: "2026-03-24T11:27:00.000Z",
@@ -353,6 +357,7 @@ const mockLeads: Lead[] = [
         service_agreement: "signed",
         consumer_rights_disclosure: "signed",
         cancellation_form: "signed",
+        assignment_of_claims: "signed",
         authorization_release_information: "signed",
         authorization_submit_disputes: "signed",
         consumer_directed_dispute_authorization: "signed",
@@ -370,6 +375,10 @@ const mockLeads: Lead[] = [
         cancellation_form: {
           sentAt: "2026-03-23T08:15:00.000Z",
           signedAt: "2026-03-23T08:43:00.000Z",
+        },
+        assignment_of_claims: {
+          sentAt: "2026-03-23T08:15:00.000Z",
+          signedAt: "2026-03-23T08:44:00.000Z",
         },
         authorization_release_information: {
           sentAt: "2026-03-23T08:15:00.000Z",
@@ -804,16 +813,16 @@ export function getLeadStatusBarModel(lead: Lead) {
 
   let stage: "red" | "orange" | "yellow" | "green" = "red";
   let stepLabel = "Intake / onboarding started";
-  let showStripe = false;
+  let showPayment = false;
 
   if (mailed) {
     stage = "green";
     stepLabel = "Review completed / mailed";
-    showStripe = true;
+    showPayment = true;
   } else if (awaitingReview) {
     stage = "yellow";
     stepLabel = "Generation complete / awaiting review";
-    showStripe = true;
+    showPayment = true;
   } else if (readyForAi) {
     stage = "orange";
     stepLabel = "Uploads completed / ready for AI";
@@ -848,6 +857,6 @@ export function getLeadStatusBarModel(lead: Lead) {
     problem,
     isVibrating: stage !== "red",
     showPhone: hasConsultRequest,
-    showStripe,
+    showPayment,
   };
 }

@@ -6,19 +6,19 @@ const previewSteps = [
     step: "01",
     title: "Open the file",
     copy:
-      "Start intake, frame the credit problem, and see the exact path before you commit to the full workflow.",
+      "Start intake and see the path before anything moves.",
   },
   {
     step: "02",
     title: "Upload what matters",
     copy:
-      "Bring in all three bureau reports, valid ID, and proof of address so the case can move without guesswork.",
+      "Bring in all three bureau reports, valid ID, and proof of address.",
   },
   {
     step: "03",
     title: "Move into review",
     copy:
-      "Once the file is complete, the portal shifts into AI review, admin review, approval, payment release, and certified mail.",
+      "The file moves into review, admin approval, and release planning.",
   },
 ];
 
@@ -41,7 +41,7 @@ export function IntakePreviewSection() {
               See the intake before you step in.
             </h2>
             <p className="max-w-2xl text-base leading-8 text-zinc-600">
-              The platform shows the stages up front so clients know what documents are needed, what happens next, and why the process stays structured.
+              The platform shows what is needed first so the file can move cleanly.
             </p>
           </div>
 
@@ -66,11 +66,8 @@ export function IntakePreviewSection() {
             ))}
           </div>
 
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-6">
             <Button href="/intake">Start Your Credit Review</Button>
-            <Button href="/book" variant="secondaryLight">
-              Book a Call
-            </Button>
           </div>
         </article>
 

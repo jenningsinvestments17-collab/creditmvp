@@ -55,15 +55,15 @@ export function Hero() {
         <div className="flex max-w-3xl flex-col items-start justify-center gap-5 max-md:items-center max-md:text-center">
           <p className="eyebrow">Credu Consulting</p>
           <div className="inline-flex flex-wrap items-center gap-2">
-            <span className="rounded-full border border-accent/40 bg-accent/12 px-4 py-2 text-[11px] uppercase tracking-[0.22em] text-accent">
-              No upfront fees
-            </span>
             <span className="rounded-full border border-white/12 bg-white/[0.05] px-4 py-2 text-[11px] uppercase tracking-[0.22em] text-zinc-300">
+              3-bureau workflow
+            </span>
+            <span className="rounded-full border border-accent/40 bg-accent/12 px-4 py-2 text-[11px] uppercase tracking-[0.22em] text-accent">
               Approval before release
             </span>
           </div>
           <h1 className="display-title text-6xl md:text-[7.6rem]">
-            No Upfront Fee.
+            Clear Review.
             <br />
             Bigger Moves.
           </h1>
@@ -112,7 +112,7 @@ export function Hero() {
             <div className="relative space-y-5">
               <div className="flex items-center justify-between gap-4">
                 <p className="text-[11px] uppercase tracking-[0.24em] text-zinc-400">
-                  No upfront fee offer
+                  Client portal workflow
                 </p>
                 <span className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-2 text-[10px] uppercase tracking-[0.22em] text-zinc-300">
                   portal workflow

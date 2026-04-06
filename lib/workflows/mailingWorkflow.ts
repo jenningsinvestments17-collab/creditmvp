@@ -1,5 +1,5 @@
 import type { DisputeRecord, MailingJobRecord, PaymentRecord } from "@/lib/types";
-import { isPaymentSettled } from "@/lib/stripe/service";
+import { isPaymentSettled } from "@/lib/mailing/paymentState";
 
 export function isMailingEligible(input: {
   dispute: Pick<DisputeRecord, "approvedAt" | "serviceRenderedAt" | "workflowStatus"> | null;

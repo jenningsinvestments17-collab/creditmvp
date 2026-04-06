@@ -4,58 +4,58 @@ import { PAYMENT_RELEASE_COPY } from "@/components/home/paymentCopy";
 const processSteps = [
   {
     step: "01",
-    title: "Start intake",
+    title: "Start Intake",
     copy:
-      "Begin with a clean entry point so the credit issue is understood before anything else gets layered on top.",
+      "Open your file, understand the path, and frame the credit problem clearly before anything moves.",
   },
   {
     step: "02",
-    title: "Upload reports",
+    title: "Upload Documents",
     copy:
-      "Bring in Experian, Equifax, and TransUnion so the file review starts with real signal, not assumptions.",
+      "Upload all 3 bureau reports, your valid ID, and proof of address so the file can move on real signal.",
   },
   {
     step: "03",
-    title: "Sign and lock",
+    title: "File Review",
     copy:
-      "Complete the required packet and permissions so the workflow opens in the right order and nothing gets skipped.",
+      "Review the file for negative items, reporting issues, and the strongest points of challenge.",
   },
   {
     step: "04",
-    title: "Move through review",
+    title: "Dispute Preparation",
     copy:
-      "Keep the case visible while the file is reviewed, structured, and prepared for the next operational step.",
+      "Prepare the dispute strategy and supporting structure for each account being challenged.",
   },
   {
     step: "05",
-    title: "Disputes sent",
+    title: "Admin Approval",
     copy:
-      "Once review is complete, disputes move out with clean control and a better paper trail behind the file.",
+      "Run the file through admin review so nothing gets released without final oversight.",
   },
   {
     step: "06",
-    title: "Certified mailing",
+    title: "Certified Mailing",
     copy:
       "Release disputes through certified mailing once the work is completed and approved for release.",
   },
   {
     step: "07",
-    title: "Upload responses",
+    title: "Response Tracking",
     copy:
-      "Bring bureau responses and receipts back into the portal so the case history stays organized and reviewable.",
+      "Track bureau responses, movement, and updates so the client can see progress clearly.",
   },
   {
     step: "08",
-    title: "Reassessment",
+    title: "Reassessment & Next Moves",
     copy:
-      "Review the updated file, identify what shifted, and decide whether the next move is complete or needs another pass.",
+      "Reassess the file after responses come back and determine the next best move toward stronger credit positioning.",
   },
 ];
 
 const prepPoints = [
-  "A visible 8-step process from intake to reassessment",
-  "Clear upload checkpoints so clients know what comes next",
-  "A workflow built to reduce guesswork and improve trust",
+  "Visible from intake to reassessment",
+  "Clear upload and approval checkpoints",
+  "Payment tied to approved release",
 ];
 
 export default function HowItWorksPage() {
@@ -99,8 +99,7 @@ export default function HowItWorksPage() {
                 </div>
 
               <p className="text-sm leading-7 text-zinc-500">
-                The goal is not to overwhelm. It is to keep the file moving in the
-                right order while making the next action easy to understand.
+                The structure is meant to keep the file readable, not crowded.
               </p>
               <p className="text-sm leading-7 text-zinc-500">
                 {PAYMENT_RELEASE_COPY}
@@ -139,12 +138,7 @@ export default function HowItWorksPage() {
                 and open the file the right way.
               </p>
             </div>
-            <div className="flex flex-col gap-3 sm:flex-row">
-              <Button href="/intake">Start Your Credit Review</Button>
-              <Button href="/book" variant="secondaryLight">
-                Book Consultation
-              </Button>
-            </div>
+            <Button href="/intake">Start Your Credit Review</Button>
           </div>
         </div>
       </section>

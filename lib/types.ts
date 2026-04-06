@@ -77,6 +77,7 @@ export type ContractDocumentKey =
   | "service_agreement"
   | "consumer_rights_disclosure"
   | "cancellation_form"
+  | "assignment_of_claims"
   | "authorization_release_information"
   | "authorization_submit_disputes"
   | "consumer_directed_dispute_authorization"
@@ -543,8 +544,6 @@ export type PaymentRecord = {
   amountCents: number;
   currency: "usd";
   status: PaymentStatus;
-  stripePaymentIntentId?: string;
-  stripeCheckoutSessionId?: string;
   checkoutUrl?: string;
   updatePaymentMethodUrl?: string;
   paymentMethodLast4?: string;

@@ -65,6 +65,10 @@ export type AdminDashboardViewModel = {
   query: string;
   notificationCount: number;
   reminderMessage?: string;
+  alertsMeta: {
+    hasAlerts: boolean;
+    errorMessages: string[];
+  };
   kpis: AdminDashboardKpi[];
   funnel: AdminDashboardFunnelStep[];
   revenueQueue: AdminRevenueQueueItem[];

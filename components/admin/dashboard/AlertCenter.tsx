@@ -6,6 +6,7 @@ export function AlertCenter({ model }: { model: AdminDashboardViewModel }) {
     { title: "Notification alerts", items: model.alerts.notificationAlerts },
     { title: "Ops alerts", items: model.alerts.opsAlerts },
   ];
+  const hasAlerts = model.alertsMeta.hasAlerts;
 
   return (
     <section className="rounded-[1.8rem] border border-white/10 bg-[#121215]/92 p-6 text-white shadow-[0_20px_60px_rgba(0,0,0,0.36)]">
@@ -15,6 +16,19 @@ export function AlertCenter({ model }: { model: AdminDashboardViewModel }) {
           Pressure points.
         </h3>
       </div>
+
+      {model.alertsMeta.errorMessages.length ? (
+        <div className="mt-6 rounded-[1.2rem] border border-rose-400/20 bg-rose-500/10 px-4 py-4 text-sm leading-7 text-rose-100">
+          <p className="font-semibold uppercase tracking-[0.08em]">Alert load issue</p>
+          <p className="mt-2">{model.alertsMeta.errorMessages.join(" ")}</p>
+        </div>
+      ) : null}
+
+      {!hasAlerts ? (
+        <div className="mt-6 rounded-[1.2rem] border border-white/10 bg-white/[0.04] px-4 py-4 text-sm leading-7 text-zinc-300">
+          No alerts available
+        </div>
+      ) : null}
 
       <div className="mt-6 grid gap-4 xl:grid-cols-3">
         {groups.map((group) => (
@@ -39,7 +53,7 @@ export function AlertCenter({ model }: { model: AdminDashboardViewModel }) {
                 ))
               ) : (
                 <div className="rounded-[1rem] border border-white/10 bg-white/[0.04] px-3 py-3 text-sm leading-7 text-zinc-400">
-                  No active alerts.
+                  No alerts available.
                 </div>
               )}
             </div>

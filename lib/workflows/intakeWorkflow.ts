@@ -5,9 +5,10 @@ import type { IntakeProgressStep, IntakeProfileData, IntakeStepId } from "@/type
 
 const STEP_ORDER: IntakeStepId[] = [
   "profile",
-  "disclosures",
-  "contracts",
   "documents",
+  "disclosures",
+  "assignment",
+  "contracts",
   "review",
 ];
 
@@ -15,12 +16,14 @@ export function getIntakeStepHref(step: IntakeStepId) {
   switch (step) {
     case "profile":
       return "/intake/profile";
-    case "disclosures":
-      return "/intake/disclosures";
-    case "contracts":
-      return "/intake/contracts";
     case "documents":
       return "/intake/documents";
+    case "disclosures":
+      return "/intake/disclosures";
+    case "assignment":
+      return "/intake/assignment";
+    case "contracts":
+      return "/intake/contracts";
     case "review":
       return "/intake/review";
     default:
@@ -45,14 +48,16 @@ export function normalizeProfileData(
 
 export function getAllowedIntakeStep(input: {
   profileCompleted: boolean;
-  disclosuresAccepted: boolean;
-  contractsAccepted: boolean;
   documentsReady: boolean;
+  disclosuresAccepted: boolean;
+  assignmentAccepted: boolean;
+  contractsAccepted: boolean;
 }) {
   if (!input.profileCompleted) return "profile" satisfies IntakeStepId;
-  if (!input.disclosuresAccepted) return "disclosures" satisfies IntakeStepId;
-  if (!input.contractsAccepted) return "contracts" satisfies IntakeStepId;
   if (!input.documentsReady) return "documents" satisfies IntakeStepId;
+  if (!input.disclosuresAccepted) return "disclosures" satisfies IntakeStepId;
+  if (!input.assignmentAccepted) return "assignment" satisfies IntakeStepId;
+  if (!input.contractsAccepted) return "contracts" satisfies IntakeStepId;
   return "review" satisfies IntakeStepId;
 }
 
@@ -77,22 +82,6 @@ export function buildIntakeProgressSteps(input: {
       status: allowedIndex > 0 ? "complete" : requestedIndex === 0 ? "current" : "locked",
     },
     {
-      id: "disclosures",
-      title: "Disclosures",
-      helper: "Required acknowledgments before onboarding continues.",
-      href: getIntakeStepHref("disclosures"),
-      status:
-        allowedIndex > 1 ? "complete" : requestedIndex === 1 && allowedIndex >= 1 ? "current" : "locked",
-    },
-    {
-      id: "contracts",
-      title: "Contracts",
-      helper: "Onboarding authorizations before uploads open.",
-      href: getIntakeStepHref("contracts"),
-      status:
-        allowedIndex > 2 ? "complete" : requestedIndex === 2 && allowedIndex >= 2 ? "current" : "locked",
-    },
-    {
       id: "documents",
       title: "Documents",
       helper: "Required bureau reports, ID, and proof of address.",
@@ -100,16 +89,40 @@ export function buildIntakeProgressSteps(input: {
       status:
         input.documentsReady
           ? "complete"
-          : requestedIndex === 3 && allowedIndex >= 3
+          : requestedIndex === 1 && allowedIndex >= 1
             ? "current"
             : "locked",
     },
     {
+      id: "disclosures",
+      title: "Disclosure",
+      helper: "Required written consumer disclosure before contract review.",
+      href: getIntakeStepHref("disclosures"),
+      status:
+        allowedIndex > 2 ? "complete" : requestedIndex === 2 && allowedIndex >= 2 ? "current" : "locked",
+    },
+    {
+      id: "assignment",
+      title: "Assignment",
+      helper: "Assignment of claims fee agreement and 50% proceeds acknowledgment.",
+      href: getIntakeStepHref("assignment"),
+      status:
+        allowedIndex > 3 ? "complete" : requestedIndex === 3 && allowedIndex >= 3 ? "current" : "locked",
+    },
+    {
+      id: "contracts",
+      title: "Contract Review",
+      helper: "Review service terms, fee language, and cancellation rights before signing.",
+      href: getIntakeStepHref("contracts"),
+      status:
+        allowedIndex > 4 ? "complete" : requestedIndex === 4 && allowedIndex >= 4 ? "current" : "locked",
+    },
+    {
       id: "review",
-      title: "Review",
-      helper: "Final check before intake completion.",
+      title: "Signature & Finish",
+      helper: "Confirm disclosure, assignment, and contract review before completion.",
       href: getIntakeStepHref("review"),
-      status: requestedIndex === 4 && allowedIndex >= 4 ? "current" : "locked",
+      status: requestedIndex === 5 && allowedIndex >= 5 ? "current" : "locked",
     },
   ];
 }

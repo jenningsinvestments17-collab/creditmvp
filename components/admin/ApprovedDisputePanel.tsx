@@ -5,8 +5,8 @@ import type {
   PaymentRecord,
 } from "@/lib/types";
 import { disputeWorkflowStatusMeta } from "@/lib/disputes/mailing";
+import { isPaymentSettled } from "@/lib/mailing/paymentState";
 import { mailingProviderStatusLabels, paymentStatusLabels } from "@/lib/ui/statusLabels";
-import { isPaymentSettled } from "@/lib/stripe/service";
 
 export function ApprovedDisputePanel({
   dispute,
@@ -136,15 +136,15 @@ export function ApprovedDisputePanel({
 
       <div className="mt-5 rounded-[1.2rem] border border-black/10 bg-surface-light-soft px-4 py-4 text-sm leading-7 text-zinc-700">
         <strong className="text-text-dark">Gating rule:</strong> no mailing job can be sent before admin approval,
-        service-render confirmation, final PDF generation, and captured payment confirmation.
+        service-render confirmation, final PDF generation, and payment confirmation.
       </div>
 
       {!canSendToProvider &&
       (dispute.workflowStatus === "paid_ready_to_send" ||
         dispute.workflowStatus === "queued_for_send") ? (
         <div className="mt-4 rounded-[1.2rem] border border-amber-400/20 bg-amber-500/10 px-4 py-4 text-sm leading-7 text-amber-900">
-          Send is blocked until the $405 service fee is fully secured. If the prior authorization
-          expired or failed, request an updated payment method before mailing.
+          Send is blocked until the file is cleared for payment release. If confirmation expired
+          or failed, request an updated payment method before mailing.
         </div>
       ) : null}
 

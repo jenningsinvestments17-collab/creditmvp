@@ -6,8 +6,6 @@ const requiredVariables = [
   "ADMIN_BOOTSTRAP_PASSWORD",
   "NEXT_PUBLIC_APP_URL",
   "APP_BASE_URL",
-  "STRIPE_SECRET_KEY",
-  "STRIPE_WEBHOOK_SECRET",
 ];
 
 function validateAbsoluteUrl(name, value) {

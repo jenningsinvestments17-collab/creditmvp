@@ -10,19 +10,29 @@ const contractDocumentBase: Record<
 > = {
   service_agreement: {
     label: "Service agreement / contract",
-    description: "Primary onboarding agreement covering service terms and client relationship.",
+    description:
+      "Primary consultation agreement covering the DIY support service, drafting and correspondence work, and cancellation rights.",
     required: true,
     version: "v1",
   },
   consumer_rights_disclosure: {
     label: "Consumer rights disclosure",
-    description: "Consumer disclosure included in the onboarding packet for review and acknowledgment.",
+    description:
+      "Written disclosure covering services, fee schedule, consumer rights, and cancellation before any contract execution or payment.",
     required: true,
     version: "v1",
   },
   cancellation_form: {
     label: "Cancellation form",
-    description: "Cancellation notice and timing disclosure included with the onboarding packet.",
+    description:
+      "Standalone cancellation notice confirming the client's five-business-day right to cancel without penalty.",
+    required: true,
+    version: "v1",
+  },
+  assignment_of_claims: {
+    label: "Assignment of claims for damages",
+    description:
+      "Assignment agreement covering fifty percent of applicable recovered proceeds and continued cooperation through resolution.",
     required: true,
     version: "v1",
   },
@@ -136,11 +146,129 @@ export function getNextUnsignedContract(documents: ContractDocument[]) {
 }
 
 export function renderContractTemplatePreview(document: ContractDocument, clientName: string) {
-  return `Document: ${document.label}
-Version: ${document.version}
-Client: ${clientName}
+  const cancellationClause =
+    "You may cancel this agreement within five (5) business days from the date of signing without any penalty or obligation.";
+  const serviceDescription = "This is a consultation-based, DIY credit repair support service.";
+  const feeDescription =
+    "The fee is for drafting and sending dispute letters and related correspondence.";
 
-This is a placeholder rendering surface for the future contract template system.
-It will later support stored templates, client merge fields, admin review, PDF export,
-and signature audit events without changing the portal or admin workflow layout.`;
+  const partyBlock = `Client: ${clientName}`;
+
+  switch (document.key) {
+    case "service_agreement":
+      return `Service Agreement
+Version: ${document.version}
+${partyBlock}
+
+Service description:
+${serviceDescription}
+
+Fee description:
+${feeDescription}
+
+Services:
+We assist with drafting and sending dispute letters and provide guidance throughout the process.
+
+Fee schedule:
+Fees apply only after services are completed and approved for release.
+
+Consumer rights:
+You are not required to purchase any service.
+
+Cancellation:
+${cancellationClause}
+
+Client acknowledgment:
+By signing, the client confirms review of the service terms, fee language, and cancellation rights before any payment becomes part of release.`;
+
+    case "consumer_rights_disclosure":
+      return `Consumer Disclosure
+Version: ${document.version}
+${partyBlock}
+
+Services:
+We assist with drafting and sending dispute letters and provide guidance throughout the process.
+
+Fee schedule:
+Fees apply only after services are completed and approved for release.
+
+Consumer rights:
+You are not required to purchase any service.
+
+Cancellation:
+You have the right to cancel this agreement within five (5) business days without penalty.
+
+Service clarification:
+${serviceDescription}
+
+Fee clarification:
+${feeDescription}`;
+
+    case "cancellation_form":
+      return `Cancellation Notice
+Version: ${document.version}
+${partyBlock}
+
+Right to cancel:
+${cancellationClause}
+
+How to use this notice:
+Submit written notice within the cancellation period if you choose not to continue. No penalty or obligation applies when cancellation is made within that window.`;
+
+    case "assignment_of_claims":
+      return `Assignment of Claims for Damages
+
+Assignor:
+${clientName}
+[Client Address]
+
+Assignee:
+Kendarion Jennings
+Member, Credu Consulting LLC
+100 Peabody Place, Suite 150
+Memphis, TN 38173
+
+For value received, the Assignor transfers and assigns an interest in any and all claims, demands, and causes of action arising from or related to the following:
+
+- Fair Credit Reporting Act (FCRA), 15 U.S.C. §§ 1681-1681x
+- Fair Debt Collection Practices Act (FDCPA), 15 U.S.C. §§ 1692-1692p
+- Uniform Commercial Code, Article 9, Part 6
+- Telephone Consumer Protection Act (TCPA), 47 U.S.C. § 227
+- Real Estate Settlement Procedures Act (RESPA), 12 U.S.C. §§ 2601-2617
+- Any applicable state laws related to consumer protection, tort, negligence, or similar claims
+
+Service clarification:
+${serviceDescription}
+${feeDescription}
+
+Assignment fee agreement:
+Client agrees to assign fifty percent (50%) of any proceeds recovered from applicable claims to the company.
+
+Discretion:
+The Assignee may, in its own name or in the name of the Assignor, prosecute, collect, settle, compromise, and execute releases relating to such claims as the Assignee deems appropriate.
+
+Cooperation:
+The Assignor agrees to provide reasonable assistance as needed through resolution of the matter.
+
+Cancellation rights:
+${cancellationClause}
+
+Assignor Signature: ______________________
+Print Name: ______________________
+Date: ______________________
+
+Assignee Signature: ______________________
+Print Name: Kendarion Jennings
+Date: ______________________`;
+
+    default:
+      return `${document.label}
+Version: ${document.version}
+${partyBlock}
+
+${serviceDescription}
+${feeDescription}
+
+${cancellationClause}`;
+  }
 }

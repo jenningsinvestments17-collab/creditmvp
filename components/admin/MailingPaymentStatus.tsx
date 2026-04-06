@@ -1,6 +1,7 @@
 import type { PaymentRecord } from "@/lib/types";
+import { PAYMENT_RELEASE_COPY } from "@/components/home/paymentCopy";
+import { isPaymentAuthorized, isPaymentSettled } from "@/lib/mailing/paymentState";
 import { paymentStatusLabels } from "@/lib/ui/statusLabels";
-import { isPaymentAuthorized, isPaymentSettled } from "@/lib/stripe/service";
 
 export function MailingPaymentStatus({
   payment,
@@ -20,12 +21,12 @@ export function MailingPaymentStatus({
             Payment gate before provider send.
           </h3>
           <span className="inline-flex rounded-full border border-sky-400/25 bg-sky-500/12 px-3 py-1 text-[11px] uppercase tracking-[0.22em] text-sky-700">
-            Stripe Preauthorization $405
+            Release payment check
           </span>
         </div>
         <p className="text-sm leading-7 text-zinc-600">
-          The system re-checks payment validity before final service release so certified mail
-          does not move forward on an expired or failed payment method.
+          {PAYMENT_RELEASE_COPY} Certified mail does not move forward on an expired or failed
+          payment method.
         </p>
       </div>
 
@@ -37,14 +38,14 @@ export function MailingPaymentStatus({
       </div>
 
       <div className="mt-4 rounded-[1.2rem] border border-sky-400/20 bg-sky-500/10 px-4 py-4 text-sm leading-7 text-sky-950">
-        <strong>Stripe preauthorization:</strong>{" "}
+        <strong>Payment status:</strong>{" "}
         {isPaymentSettled(payment)
           ? "captured and secured"
           : isPaymentAuthorized(payment)
-            ? "authorized and ready for final capture"
+            ? "confirmed and ready for final release"
             : "not secured yet"}
         {" | "}
-        <strong>$405 service fee</strong> must be authorized or captured before certified mail can be released.
+        <strong>$405 service fee</strong> must be confirmed before certified mail can be released.
       </div>
 
       {payment ? (
@@ -70,8 +71,8 @@ export function MailingPaymentStatus({
             className="inline-flex min-h-12 items-center justify-center rounded-[0.95rem] border border-black/10 bg-white px-5 text-sm font-semibold uppercase tracking-[0.08em] text-text-dark transition-all duration-200 hover:-translate-y-0.5 hover:border-accent/45 hover:text-[#7d6434]"
           >
             {payment?.clientActionRequired
-              ? "Request Updated Card For $405 Preauthorization"
-              : "Create Stripe $405 Preauthorization"}
+              ? "Request Updated Payment Method"
+              : "Create Payment Request"}
           </button>
         </form>
       ) : null}

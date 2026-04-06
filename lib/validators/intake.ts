@@ -10,13 +10,16 @@ export const intakeProfileSchema = z.object({
 });
 
 export const intakeDisclosureSchema = z.object({
-  accuracyAcknowledged: z.literal("on"),
   disclosureAcknowledged: z.literal("on"),
+});
+
+export const intakeAssignmentSchema = z.object({
+  assignmentAcknowledged: z.literal("on"),
 });
 
 export const intakeContractsSchema = z.object({
   contractAcknowledged: z.literal("on"),
-  authorizationAcknowledged: z.literal("on"),
+  cancellationAcknowledged: z.literal("on"),
 });
 
 export const intakeReviewSchema = z.object({
