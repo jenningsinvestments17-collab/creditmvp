@@ -335,10 +335,22 @@ export async function queueMailSentNotifications(input: {
 }
 
 export async function getAdminNotificationAlerts() {
-  return {
-    summary: await getNotificationQueueSummary(),
-    alerts: await getAdminAlerts(),
-  };
+  try {
+    return {
+      summary: await getNotificationQueueSummary(),
+      alerts: await getAdminAlerts(),
+    };
+  } catch {
+    return {
+      summary: {
+        total: 0,
+        pending: 0,
+        sent: 0,
+        failed: 0,
+      },
+      alerts: [],
+    };
+  }
 }
 
 export async function queueAdminFollowUpReminder(input: {
