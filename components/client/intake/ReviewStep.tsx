@@ -1,3 +1,4 @@
+import { LegalAcknowledgmentControls } from "@/components/client/intake/LegalAcknowledgmentControls";
 import { completeReviewStepAction } from "@/lib/services/intakeService";
 import type { IntakeViewModel } from "@/types/intake";
 
@@ -23,14 +24,17 @@ export function ReviewStep({ model }: { model: IntakeViewModel }) {
         <div className="rounded-[1rem] border border-white/10 bg-white/[0.04] px-4 py-4 text-sm leading-7 text-zinc-300">
           Contracts reviewed: {model.contractsAccepted ? "yes" : "no"}.
         </div>
-        <label className="rounded-[1rem] border border-white/10 bg-white/[0.04] px-4 py-4 text-sm leading-7 text-zinc-300">
-          <input type="checkbox" name="reviewConfirmed" className="mr-3" />
-          I confirm the documents, disclosure, assignment terms, and contract review are complete and ready to return to the dashboard.
-        </label>
+        <LegalAcknowledgmentControls
+          fields={[
+            {
+              name: "reviewConfirmed",
+              label:
+                "I confirm the documents, disclosure, assignment terms, and contract review are complete and ready to return to the dashboard.",
+            },
+          ]}
+          submitLabel="Complete Intake"
+        />
       </div>
-      <button type="submit" className="mt-6 inline-flex min-h-12 items-center justify-center rounded-[0.95rem] border border-accent/60 bg-accent px-5 text-sm font-semibold uppercase tracking-[0.08em] text-black transition-all duration-200 hover:-translate-y-0.5 hover:border-accent-soft hover:bg-accent-soft">
-        Complete Intake
-      </button>
     </form>
   );
 }
