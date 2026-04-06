@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+
 type AdminLoginFormProps = {
   email?: string;
   hasError?: boolean;
@@ -9,6 +13,8 @@ export function AdminLoginForm({
   hasError = false,
   next = "",
 }: AdminLoginFormProps) {
+  const [showPassword, setShowPassword] = useState(false);
+
   return (
     <form action="/api/auth/admin/login" method="post" className="space-y-5">
       <input type="hidden" name="next" value={next} />
@@ -19,16 +25,27 @@ export function AdminLoginForm({
             type="email"
             name="email"
             defaultValue={email}
+            autoComplete="username"
             required
             className="min-h-14 rounded-[1rem] border border-black/10 bg-white px-4 text-base text-text-dark outline-none transition-all duration-200 focus:border-accent/45 focus:ring-2 focus:ring-accent/15"
           />
         </label>
 
         <label className="grid gap-2">
-          <span className="text-[11px] uppercase tracking-[0.22em] text-accent">Password</span>
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-[11px] uppercase tracking-[0.22em] text-accent">Password</span>
+            <button
+              type="button"
+              onClick={() => setShowPassword((current) => !current)}
+              className="text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-500 transition-colors duration-200 hover:text-[#7d6434]"
+            >
+              {showPassword ? "Hide" : "Show"}
+            </button>
+          </div>
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             name="password"
+            autoComplete="current-password"
             required
             className="min-h-14 rounded-[1rem] border border-black/10 bg-white px-4 text-base text-text-dark outline-none transition-all duration-200 focus:border-accent/45 focus:ring-2 focus:ring-accent/15"
           />
