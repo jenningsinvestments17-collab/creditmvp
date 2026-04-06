@@ -10,13 +10,20 @@ function todayKey() {
 }
 
 async function getRedis() {
-  const redis = getRedisClient();
-  await redis.connect().catch(() => null);
-  return redis;
+  try {
+    const redis = getRedisClient();
+    await redis.connect().catch(() => null);
+    return redis;
+  } catch {
+    return null;
+  }
 }
 
 export async function incrementOpsCounter(metric: string, amount = 1) {
   const redis = await getRedis();
+  if (!redis) {
+    return;
+  }
   const key = `${METRIC_PREFIX}:${todayKey()}`;
   await redis.hincrby(key, metric, amount);
   await redis.expire(key, 60 * 60 * 24 * 14);
@@ -24,6 +31,9 @@ export async function incrementOpsCounter(metric: string, amount = 1) {
 
 export async function recordDurationMetric(metric: string, durationMs: number) {
   const redis = await getRedis();
+  if (!redis) {
+    return;
+  }
   const key = `${DURATION_PREFIX}:${todayKey()}:${metric}`;
   await redis.hincrby(key, "count", 1);
   await redis.hincrbyfloat(key, "sum", durationMs);
@@ -41,6 +51,9 @@ export async function recordOpsError(input: {
   metadata?: Record<string, unknown>;
 }) {
   const redis = await getRedis();
+  if (!redis) {
+    return;
+  }
   const safeMetadata = Object.fromEntries(
     Object.entries(input.metadata ?? {}).filter(([key]) => !["email", "phone", "token", "password", "parsedText", "letterText"].includes(key)),
   );
@@ -59,6 +72,13 @@ export async function recordOpsError(input: {
 
 export async function getOpsDashboardModel() {
   const redis = await getRedis();
+  if (!redis) {
+    return {
+      metrics: {},
+      durations: [],
+      errors: [],
+    };
+  }
   const metricKey = `${METRIC_PREFIX}:${todayKey()}`;
   const metrics = await redis.hgetall(metricKey);
   const errors = (await redis.lrange(ERROR_LIST_KEY, 0, 9)).flatMap((entry) => {
